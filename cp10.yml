@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: CheckPoint viikko 10
+
+Parameters:
+  Name:
+    Type: String
+    Default: 'Hanna'
+
+Resources:
+  SecurityGroupEC2:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: 'EC2 security group'
+      VpcId: vpc-4c243025
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 0.0.0.0/0
+
+  MyEC2Instance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: 'ami-07eda9385feb1e969'
+      InstanceType: t2.nano
+      SecurityGroupIds:
+        - !Ref SecurityGroupEC2
+      Tags:
+        - Key: Owner
+          Value: Ref! Name
+
+Outputs:
+  MyEC2DNSName:
+    Description: The DNSName of the EC2
+    Value: !GetAtt MyEC2Instance.PublicDnsName
+
